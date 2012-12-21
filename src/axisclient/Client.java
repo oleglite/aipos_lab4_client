@@ -4,24 +4,33 @@
  */
 package axisclient;
 
+import java.util.TreeMap;
+
 /** Интерфейс для получения данных справочника
  *
  * @author Oleg Beloglazov
  */
 public interface Client {
     
-    /** Получить названия всех доступных статей
+    /** Получить идентификаторы статей
      * 
-     * @return названия всех статей, или null если произошла ошибка
+     * @return идентификаторы всех статей, или null если произошла ошибка
      */
-    String[] getArticles();
+    String[] getArticlesId();
+    
+    /** Получить название статьи
+     * 
+     * @param articleId идентификатор статьи
+     * @return название статьи, или null, если произошла ошибка
+     */
+    String getArticleName(String articleId);
 
     /** Получить содержимое статьи
      * 
-     * @param articleName название статьи
+     * @param articleId идентификатор статьи
      * @return содержимое статьи, или null, если произошла ошибка
      */
-    String getArticleContent(String articleName);
+    String getArticleContent(String articleId);
     
     /** Добавить статью
      * 
@@ -32,16 +41,16 @@ public interface Client {
 
     /** Удалить статью
      * 
-     * @param articleName название статьи
+     * @param articleName идентификатор статьи
      * @return null если не было ошибок, иначе описание ошибки
      */
-    String removeArticle(String articleName);
+    String removeArticle(String articleId);
 
     /** Установить содержимое статьи
      * 
-     * @param articleName название статьи
+     * @param articleId идентификатор статьи
      * @param articleContent содержимое статьи
      * @return null если не было ошибок, иначе описание ошибки
      */
-    String setArticleContent(String articleName, String articleContent);
+    String setArticleContent(String articleId, String articleContent);
 }

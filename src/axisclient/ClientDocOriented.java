@@ -6,6 +6,9 @@ package axisclient;
 
 import axisservice.AxisServiceStub;
 import java.rmi.RemoteException;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /** Реализация клиента справочника, использующая документо-ориентированное взаимодействие с сервисом
  *  
@@ -15,13 +18,15 @@ public class ClientDocOriented implements Client{
     
     AxisServiceStub mService;
     
-    AxisServiceStub.GetArticles mGetArticles;
+    AxisServiceStub.GetArticlesId mGetArticlesId;
+    AxisServiceStub.GetArticleName mGetArticleName;
     AxisServiceStub.GetArticleContent mGetArticleContent;
     AxisServiceStub.AddArticle mAddArticle;
     AxisServiceStub.RemoveArticle mRemoveArticle;
     AxisServiceStub.SetArticleContent mSetArticleContent;
     
-    AxisServiceStub.GetArticlesResponse mGetArticlesResponse;    
+    AxisServiceStub.GetArticlesIdResponse mGetArticlesIdResponse;    
+    AxisServiceStub.GetArticleNameResponse mGetArticleNameResponse; 
     AxisServiceStub.GetArticleContentResponse mGetArticleContentResponse;    
     AxisServiceStub.AddArticleResponse mAddArticleResponse;    
     AxisServiceStub.RemoveArticleResponse mRemoveArticleResponse;    
@@ -34,7 +39,8 @@ public class ClientDocOriented implements Client{
         try {
             mService = new AxisServiceStub();
             
-            mGetArticles = new AxisServiceStub.GetArticles();
+            mGetArticlesId = new AxisServiceStub.GetArticlesId();
+            mGetArticleName = new AxisServiceStub.GetArticleName();
             mGetArticleContent = new AxisServiceStub.GetArticleContent();
             mAddArticle = new AxisServiceStub.AddArticle();
             mRemoveArticle = new AxisServiceStub.RemoveArticle();
@@ -46,23 +52,37 @@ public class ClientDocOriented implements Client{
     }
 
     @Override
-    public String[] getArticles() {
-        log("getArticles()");
-        
+    public String[] getArticlesId() {
         try {
-            mGetArticlesResponse = mService.getArticles(mGetArticles);
+            log("getArticles()");
+            
+            mGetArticlesIdResponse = mService.getArticlesId(mGetArticlesId);
+            return mGetArticlesIdResponse.get_return();
+        } catch (RemoteException ex) {
+            log(ex.getMessage());
+        }
+        return null;
+    }
+    
+    @Override
+    public String getArticleName(String articleId) {
+        log("getArticleContent(" + articleId + ")");
+        
+        mGetArticleName.setArticleId(articleId);
+        try {
+            mGetArticleNameResponse = mService.getArticleName(mGetArticleName);
         } catch (RemoteException ex) {
             log(ex.getMessage());
             return null;
         }
-        return mGetArticlesResponse.get_return();
+        return mGetArticleNameResponse.get_return();
     }
 
     @Override
-    public String getArticleContent(String articleName) {
-        log("getArticleContent(" + articleName + ")");
+    public String getArticleContent(String articleId) {
+        log("getArticleContent(" + articleId + ")");
         
-        mGetArticleContent.setArticleName(articleName);
+        mGetArticleContent.setArticleId(articleId);
         try {
             mGetArticleContentResponse = mService.getArticleContent(mGetArticleContent);
         } catch (RemoteException ex) {
@@ -87,10 +107,10 @@ public class ClientDocOriented implements Client{
     }
 
     @Override
-    public String removeArticle(String articleName) {
-        log("removeArticle(" + articleName + ")");
+    public String removeArticle(String articleId) {
+        log("removeArticle(" + articleId + ")");
         
-        mRemoveArticle.setArticleName(articleName);
+        mRemoveArticle.setArticleId(articleId);
         try {
             mRemoveArticleResponse = mService.removeArticle(mRemoveArticle);
         } catch (RemoteException ex) {
@@ -101,10 +121,10 @@ public class ClientDocOriented implements Client{
     }
 
     @Override
-    public String setArticleContent(String articleName, String articleContent) {
-        log("setArticleContent(" + articleName + ", " + articleContent + ")");
+    public String setArticleContent(String articleId, String articleContent) {
+        log("setArticleContent(" + articleId + ", " + articleContent + ")");
         
-        mSetArticleContent.setArticleName(articleName);
+        mSetArticleContent.setArticleId(articleId);
         mSetArticleContent.setArticleContent(articleContent);
         try {
             mSetArticleContentResponse = mService.setArticleContent(mSetArticleContent);
@@ -116,7 +136,7 @@ public class ClientDocOriented implements Client{
     }
     
     private static void log(String str) {
-        System.out.println("ClientDocOriented: " + str);
+        //System.out.println("ClientDocOriented: " + str);
     }
     
 }

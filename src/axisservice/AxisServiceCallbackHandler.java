@@ -61,19 +61,19 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for getArticles method
-            * override this method for handling normal response from getArticles operation
+            * auto generated Axis2 call back method for getArticlesId method
+            * override this method for handling normal response from getArticlesId operation
             */
-           public void receiveResultgetArticles(
-                    axisservice.AxisServiceStub.GetArticlesResponse result
+           public void receiveResultgetArticlesId(
+                    axisservice.AxisServiceStub.GetArticlesIdResponse result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from getArticles operation
+           * override this method for handling error response from getArticlesId operation
            */
-            public void receiveErrorgetArticles(java.lang.Exception e) {
+            public void receiveErrorgetArticlesId(java.lang.Exception e) {
             }
                 
            /**
@@ -122,6 +122,22 @@
            * override this method for handling error response from setArticleContent operation
            */
             public void receiveErrorsetArticleContent(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for getArticleName method
+            * override this method for handling normal response from getArticleName operation
+            */
+           public void receiveResultgetArticleName(
+                    axisservice.AxisServiceStub.GetArticleNameResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from getArticleName operation
+           */
+            public void receiveErrorgetArticleName(java.lang.Exception e) {
             }
                 
 

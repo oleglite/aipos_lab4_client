@@ -15,7 +15,8 @@ import javax.swing.AbstractListModel;
 public class DataModel extends AbstractListModel {
     
     Client mClient;
-    ArrayList<String> mArticles;
+    ArrayList<String> mArticles = new ArrayList<String>();
+    String[] mArticlesId;
     String mFilter = "";
     boolean mIsServiceAvaliable = false;
     
@@ -54,11 +55,11 @@ public class DataModel extends AbstractListModel {
     
     /** Получить содержимое статьи
      * 
-     * @param articleName название статьи
+     * @param articleNumber номер статьи
      * @return содержимое статьи, или null, если произошла ошибка
      */
-    public String getArticleContent(String articleName) {
-        return mClient.getArticleContent(articleName);
+    public String getArticleContent(int articleNumber) {        
+        return mClient.getArticleContent(mArticlesId[articleNumber]);
     }
     
     /** Добавить статью
@@ -75,10 +76,10 @@ public class DataModel extends AbstractListModel {
     
     /** Удалить статью
      * 
-     * @param articleName название статьи
+     * @param articleNumber номер статьи
      */
-    public void removeArticle(String articleName) throws Exception {
-        String responce = mClient.removeArticle(articleName);
+    public void removeArticle(int articleNumber) throws Exception {
+        String responce = mClient.removeArticle(mArticlesId[articleNumber]);
         update();
         if(responce != null) {
             throw new Exception(responce);
@@ -87,11 +88,11 @@ public class DataModel extends AbstractListModel {
     
     /** Установить содержимое статьи
      * 
-     * @param articleName название статьи
+     * @param articleNumber номер статьи
      * @param articleContent содержимое статьи
      */
-    public void setArticleContent(String articleName, String articleContent) throws Exception {
-        String responce = mClient.setArticleContent(articleName, articleContent);
+    public void setArticleContent(int articleNumber, String articleContent) throws Exception {
+        String responce = mClient.setArticleContent(mArticlesId[articleNumber], articleContent);
         if(responce != null) {
             throw new Exception(responce);
         }
@@ -133,16 +134,20 @@ public class DataModel extends AbstractListModel {
         if(mClient != null && mArticles != null) {
             articlesNumber = mArticles.size();
         }        
-        setArticles(mClient.getArticles());
+        loadArticles();
         if(mArticles.size() > articlesNumber) {
             articlesNumber = mArticles.size();
         }
         fireContentsChanged(this, 0, articlesNumber);
     }
     
-    private void setArticles(String[] articlesArray) {
-        if(articlesArray != null) {
-            mArticles = new ArrayList<String>(Arrays.asList(articlesArray));
+    private void loadArticles() {
+        mArticlesId = mClient.getArticlesId();
+        if(mArticlesId != null) {
+            mArticles.clear();
+            for(String id : mArticlesId) {
+                mArticles.add(mClient.getArticleName(id));
+            }
             mIsServiceAvaliable = true;
         } else {
             mArticles = new ArrayList<String>();

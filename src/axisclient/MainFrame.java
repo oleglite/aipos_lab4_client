@@ -106,7 +106,7 @@ public class MainFrame extends JFrame {
      */
     private Component createCentralComponent() {        
         mArticlesList = new JList(mClientDataModel);
-        mArticlesList.addListSelectionListener(new SelectionListener());
+        mArticlesList.addListSelectionListener(new SelectionListener(mArticlesList));
         
         mArticlesList.setPreferredSize(new Dimension(140, 500));
         
@@ -151,6 +151,10 @@ public class MainFrame extends JFrame {
         return mArticlesList.getSelectedValue();
     }
     
+    private int selectedArticleNumber() {
+        return mArticlesList.getSelectedIndex();
+    }
+    
     private class AddArticleListener implements ActionListener {
 
         @Override
@@ -179,7 +183,7 @@ public class MainFrame extends JFrame {
                     int choise = JOptionPane.showConfirmDialog(null, "Действительно удалить " + removingArticle + "?");
                     if(choise == JOptionPane.YES_OPTION) {
                         try {
-                            mClientDataModel.removeArticle(removingArticle);
+                            mClientDataModel.removeArticle(selectedArticleNumber());
                         } catch (Exception ex) {
                             showError(ex.getMessage());
                         }
@@ -199,7 +203,7 @@ public class MainFrame extends JFrame {
                 if(savingArticle != null) {
                     String articleText = mArticleTextArea.getText();                
                     try {
-                        mClientDataModel.setArticleContent(savingArticle, articleText);
+                        mClientDataModel.setArticleContent(selectedArticleNumber(), articleText);
                     } catch (Exception ex) {
                         showError(ex.getMessage());
                     }
@@ -219,11 +223,17 @@ public class MainFrame extends JFrame {
     }
     
     private class SelectionListener implements ListSelectionListener {
+        
+        private JList mList;
+        
+        public SelectionListener(JList list) {
+            mList = list;
+        }
 
         @Override
         public void valueChanged(ListSelectionEvent e) {
             if(checkConnection() && !e.getValueIsAdjusting()) {
-                String articleContent = mClientDataModel.getArticleContent(selectedArticle());
+                String articleContent = mClientDataModel.getArticleContent(mList.getSelectedIndex());
                 if(articleContent != null) {
                     mArticleTextArea.setText(articleContent);
                     mArticleTextArea.setCaretPosition(0);
